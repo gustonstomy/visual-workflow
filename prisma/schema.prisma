@@ -1,0 +1,56 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Workflow {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  nodes       Node[]
+  connections Connection[]
+
+  @@map("workflows")
+}
+
+model Node {
+  id         String  @id @default(uuid())
+  workflowId String
+  type       String  // "trigger", "action", "data", "logic"
+  subType    String  // specific node implementation (e.g., "email", "weather", "schedule")
+  label      String?
+  config     String  // JSON configuration data
+  positionX  Float
+  positionY  Float
+
+  workflow          Workflow     @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+  sourceConnections Connection[] @relation("SourceNode")
+  targetConnections Connection[] @relation("TargetNode")
+
+  @@map("nodes")
+}
+
+model Connection {
+  id           String @id @default(uuid())
+  workflowId   String
+  sourceNodeId String
+  targetNodeId String
+  sourceHandle String @default("output")
+  targetHandle String @default("input")
+
+  workflow   Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+  sourceNode Node     @relation("SourceNode", fields: [sourceNodeId], references: [id], onDelete: Cascade)
+  targetNode Node     @relation("TargetNode", fields: [targetNodeId], references: [id], onDelete: Cascade)
+
+  @@map("connections")
+}
