@@ -26,10 +26,10 @@ model Workflow {
 model Node {
   id         String  @id @default(uuid())
   workflowId String
-  type       String  // "trigger", "action", "data", "logic"
-  subType    String  // specific node implementation (e.g., "email", "weather", "schedule")
+  type       String
+  subType    String
   label      String?
-  config     String  // JSON configuration data
+  config     String
   positionX  Float
   positionY  Float
 

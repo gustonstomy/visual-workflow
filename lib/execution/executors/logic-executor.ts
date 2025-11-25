@@ -6,6 +6,7 @@ import {
   ConditionLogicConfig,
   AILogicConfig,
 } from "../../types";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export async function executeLogicNode(
   node: WorkflowNode,
@@ -104,6 +105,15 @@ async function executeAI(
   context: ExecutionContext
 ): Promise<any> {
   const config = node.config as AILogicConfig;
+
+  // Check for Gemini preference or fallback
+  if (
+    config.provider === "gemini" ||
+    (!process.env.OPENAI_API_KEY && process.env.GEMINI_API_KEY)
+  ) {
+    return executeGemini(config, context);
+  }
+
   const apiKey = process.env.OPENAI_API_KEY;
 
   if (!apiKey) {
@@ -149,6 +159,51 @@ async function executeAI(
     };
   } catch (error) {
     console.error("AI execution error:", error);
+    throw error;
+  }
+}
+
+async function executeGemini(
+  config: AILogicConfig,
+  context: ExecutionContext
+): Promise<any> {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    console.warn("Gemini API key not configured, returning mock response");
+    return {
+      response: `AI-generated response for: ${config.prompt}`,
+      mock: true,
+      provider: "gemini",
+    };
+  }
+
+  try {
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({
+      model: config.model || "gemini-pro",
+    });
+
+    const previousOutputs = Array.from(context.nodeOutputs.values());
+    const contextData =
+      previousOutputs.length > 0
+        ? JSON.stringify(previousOutputs[previousOutputs.length - 1])
+        : "";
+
+    const fullPrompt = contextData
+      ? `${config.prompt}\n\nContext data: ${contextData}`
+      : config.prompt;
+
+    const result = await model.generateContent(fullPrompt);
+    const response = await result.response;
+    const text = response.text();
+
+    return {
+      response: text,
+      model: config.model || "gemini-pro",
+      provider: "gemini",
+    };
+  } catch (error) {
+    console.error("Gemini AI execution error:", error);
     throw error;
   }
 }

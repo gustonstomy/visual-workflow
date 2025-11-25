@@ -4,7 +4,9 @@ import {
   WeatherDataConfig,
   GitHubDataConfig,
   HTTPDataConfig,
+  GoogleCalendarDataConfig,
 } from "../../types";
+import { google } from "googleapis";
 
 export async function executeDataNode(
   node: WorkflowNode,
@@ -20,7 +22,7 @@ export async function executeDataNode(
       return await fetchGitHubData(node.config as GitHubDataConfig);
 
     case "calendar":
-      return await fetchCalendarData(node.config);
+      return await fetchCalendarData(node.config as GoogleCalendarDataConfig);
 
     case "http":
       return await fetchHTTPData(node.config as HTTPDataConfig);
@@ -139,26 +141,60 @@ async function fetchGitHubData(config: GitHubDataConfig): Promise<any> {
   }
 }
 
-async function fetchCalendarData(config: any): Promise<any> {
-  console.warn(
-    "Google Calendar integration not implemented, returning mock data"
-  );
-  return {
-    events: [
-      {
-        id: "1",
-        title: "Team Meeting",
-        start: new Date().toISOString(),
-        end: new Date(Date.now() + 3600000).toISOString(),
+async function fetchCalendarData(
+  config: GoogleCalendarDataConfig
+): Promise<any> {
+  const clientEmail = process.env.GOOGLE_CLIENT_EMAIL;
+  const privateKey = process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, "\n");
+
+  if (!clientEmail || !privateKey) {
+    console.warn("Google credentials not configured, returning mock data");
+    return {
+      events: [
+        {
+          id: "1",
+          title: "Team Meeting",
+          start: new Date().toISOString(),
+          end: new Date(Date.now() + 3600000).toISOString(),
+        },
+        {
+          id: "2",
+          title: "Project Review",
+          start: new Date(Date.now() + 7200000).toISOString(),
+          end: new Date(Date.now() + 10800000).toISOString(),
+        },
+      ],
+    };
+  }
+
+  try {
+    const auth = new google.auth.GoogleAuth({
+      credentials: {
+        client_email: clientEmail,
+        private_key: privateKey,
       },
-      {
-        id: "2",
-        title: "Project Review",
-        start: new Date(Date.now() + 7200000).toISOString(),
-        end: new Date(Date.now() + 10800000).toISOString(),
-      },
-    ],
-  };
+      scopes: ["https://www.googleapis.com/auth/calendar.readonly"],
+    });
+
+    const calendar = google.calendar({ version: "v3", auth });
+
+    const response = await calendar.events.list({
+      calendarId: config.calendarId,
+      timeMin: config.timeMin || new Date().toISOString(),
+      timeMax: config.timeMax,
+      maxResults: config.maxResults || 10,
+      singleEvents: true,
+      orderBy: "startTime",
+    });
+
+    return {
+      calendarId: config.calendarId,
+      events: response.data.items,
+    };
+  } catch (error) {
+    console.error("Error fetching calendar data:", error);
+    throw error;
+  }
 }
 
 async function fetchHTTPData(config: HTTPDataConfig): Promise<any> {

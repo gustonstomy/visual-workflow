@@ -167,6 +167,43 @@ export function NodeConfigPanel({
       );
     }
 
+    if (nodeType === "data" && subType === "calendar") {
+      return (
+        <>
+          <div className="space-y-2">
+            <Label>Calendar ID</Label>
+            <Input
+              placeholder="primary"
+              value={config.calendarId || "primary"}
+              onChange={(e) =>
+                setConfig({ ...config, calendarId: e.target.value })
+              }
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Time Min (Optional)</Label>
+            <Input
+              type="datetime-local"
+              value={config.timeMin || ""}
+              onChange={(e) =>
+                setConfig({ ...config, timeMin: e.target.value })
+              }
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Max Results</Label>
+            <Input
+              type="number"
+              value={config.maxResults || 10}
+              onChange={(e) =>
+                setConfig({ ...config, maxResults: parseInt(e.target.value) })
+              }
+            />
+          </div>
+        </>
+      );
+    }
+
     if (nodeType === "logic" && subType === "filter") {
       return (
         <>
@@ -208,6 +245,19 @@ export function NodeConfigPanel({
     if (nodeType === "logic" && subType === "ai") {
       return (
         <>
+          <div className="space-y-2">
+            <Label>Provider</Label>
+            <select
+              className="w-full p-2 border rounded"
+              value={config.provider || "openai"}
+              onChange={(e) =>
+                setConfig({ ...config, provider: e.target.value })
+              }
+            >
+              <option value="openai">OpenAI</option>
+              <option value="gemini">Google Gemini</option>
+            </select>
+          </div>
           <div className="space-y-2">
             <Label>Prompt</Label>
             <Textarea
@@ -306,6 +356,62 @@ export function NodeConfigPanel({
               value={config.message || ""}
               onChange={(e) =>
                 setConfig({ ...config, message: e.target.value })
+              }
+              rows={3}
+            />
+          </div>
+        </>
+      );
+    }
+
+    if (nodeType === "action" && subType === "sheet") {
+      return (
+        <>
+          <div className="space-y-2">
+            <Label>Spreadsheet ID</Label>
+            <Input
+              placeholder="Spreadsheet ID"
+              value={config.spreadsheetId || ""}
+              onChange={(e) =>
+                setConfig({ ...config, spreadsheetId: e.target.value })
+              }
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Range</Label>
+            <Input
+              placeholder="Sheet1!A1"
+              value={config.range || ""}
+              onChange={(e) => setConfig({ ...config, range: e.target.value })}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Action</Label>
+            <select
+              className="w-full p-2 border rounded"
+              value={config.action || "append"}
+              onChange={(e) => setConfig({ ...config, action: e.target.value })}
+            >
+              <option value="append">Append Row</option>
+              <option value="update">Update Range</option>
+            </select>
+          </div>
+          <div className="space-y-2">
+            <Label>Values (Comma separated)</Label>
+            <Textarea
+              placeholder="Value 1, Value 2, {{nodeId}}"
+              value={
+                Array.isArray(config.values)
+                  ? config.values.join(", ")
+                  : config.values || ""
+              }
+              onChange={(e) =>
+                setConfig({
+                  ...config,
+                  values: e.target.value
+                    .split(",")
+                    .map((s: string) => s.trim()),
+                })
               }
               rows={3}
             />

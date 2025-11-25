@@ -8,7 +8,8 @@ export type ActionSubType =
   | "sms"
   | "webhook"
   | "social"
-  | "notification";
+  | "notification"
+  | "sheet";
 export type DataSubType = "weather" | "github" | "calendar" | "http";
 export type LogicSubType = "filter" | "transform" | "condition" | "ai";
 
@@ -59,6 +60,20 @@ export interface GitHubDataConfig extends BaseNodeConfig {
   since?: string;
 }
 
+export interface GoogleCalendarDataConfig extends BaseNodeConfig {
+  calendarId: string;
+  timeMin?: string;
+  timeMax?: string;
+  maxResults?: number;
+}
+
+export interface SheetActionConfig extends BaseNodeConfig {
+  spreadsheetId: string;
+  range: string;
+  values: string[]; // Array of values for a row
+  action: "append" | "update";
+}
+
 export interface HTTPDataConfig extends BaseNodeConfig {
   url: string;
   method: "GET" | "POST" | "PUT" | "DELETE";
@@ -87,6 +102,7 @@ export interface ConditionLogicConfig extends BaseNodeConfig {
 export interface AILogicConfig extends BaseNodeConfig {
   prompt: string;
   model?: string;
+  provider?: "openai" | "gemini";
 }
 
 // Runtime node data
