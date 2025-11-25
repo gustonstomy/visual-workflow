@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { PrismaLibSql } from "@prisma/adapter-libsql";
 
 // Prevent multiple instances of Prisma Client in development
 const globalForPrisma = globalThis as unknown as {
@@ -9,7 +10,12 @@ const globalForPrisma = globalThis as unknown as {
 export const prisma =
   globalForPrisma.prisma ||
   (() => {
+    const adapter = new PrismaLibSql({
+      url: `file:${process.cwd()}/prisma/dev.db`,
+    });
+
     const client = new PrismaClient({
+      adapter,
       log:
         process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
     });

@@ -9,6 +9,8 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@libsql/client": "^0.8.1",
+    "@prisma/adapter-libsql": "^7.0.1",
     "@prisma/client": "^7.0.0",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-dropdown-menu": "^2.1.16",
