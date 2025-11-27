@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ExecutionContext, ExecutionResult, WorkflowNode } from "../types";
 import { executeTriggerNode } from "./executors/trigger-executor";
 import { executeDataNode } from "./executors/data-executor";

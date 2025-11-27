@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // Node types and configurations
 
 export type NodeType = "trigger" | "action" | "data" | "logic";

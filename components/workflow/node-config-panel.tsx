@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { X, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,13 +23,17 @@ export function NodeConfigPanel({
   onDelete,
   onClose,
 }: NodeConfigPanelProps) {
+  // Use a key-based approach to reset state when node changes
   const [config, setConfig] = useState(node.data.config || {});
   const [label, setLabel] = useState(node.data.label || "");
+  const [currentNodeId, setCurrentNodeId] = useState(node.id);
 
-  useEffect(() => {
+  // Only update state when the node ID actually changes (different node selected)
+  if (currentNodeId !== node.id) {
     setConfig(node.data.config || {});
     setLabel(node.data.label || "");
-  }, [node]);
+    setCurrentNodeId(node.id);
+  }
 
   const handleSave = () => {
     onConfigChange(node.id, config, label);

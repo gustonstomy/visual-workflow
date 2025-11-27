@@ -19,7 +19,7 @@ import {
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div className="min-h-screen bg-linear-to-br from-slate-900 via-purple-900 to-slate-900">
       <nav className="border-b border-white/10 backdrop-blur-sm bg-white/5">
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
@@ -49,7 +49,7 @@ export default function Home() {
           <h1 className="text-6xl font-bold text-white mb-6 leading-tight">
             Build Powerful Workflows
             <br />
-            <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
               Without Writing Code
             </span>
           </h1>
@@ -64,7 +64,7 @@ export default function Home() {
             <Link href="/workflows">
               <Button
                 size="lg"
-                className="gap-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-0"
+                className="gap-2 bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-0"
               >
                 Create Your First Workflow
                 <ArrowRight className="w-5 h-5" />
@@ -124,7 +124,7 @@ export default function Home() {
           </p>
 
           <div className="grid md:grid-cols-2 gap-6">
-            <Card className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border-purple-500/20 backdrop-blur-sm">
+            <Card className="bg-linear-to-br from-purple-500/10 to-pink-500/10 border-purple-500/20 backdrop-blur-sm">
               <CardHeader>
                 <div className="flex items-center gap-3">
                   <Mail className="w-8 h-8 text-purple-400" />
@@ -142,7 +142,7 @@ export default function Home() {
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border-blue-500/20 backdrop-blur-sm">
+            <Card className="bg-linear-to-br from-blue-500/10 to-cyan-500/10 border-blue-500/20 backdrop-blur-sm">
               <CardHeader>
                 <div className="flex items-center gap-3">
                   <Github className="w-8 h-8 text-blue-400" />
@@ -162,7 +162,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="text-center bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-2xl p-12">
+        <div className="text-center bg-linear-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-2xl p-12">
           <h2 className="text-3xl font-bold text-white mb-4">
             Ready to Automate?
           </h2>
@@ -172,7 +172,7 @@ export default function Home() {
           <Link href="/workflows">
             <Button
               size="lg"
-              className="gap-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-0"
+              className="gap-2 bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-0"
             >
               Get Started Now
               <ArrowRight className="w-5 h-5" />
