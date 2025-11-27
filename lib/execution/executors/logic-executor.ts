@@ -8,6 +8,7 @@ import {
   AILogicConfig,
 } from "../../types";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { interpolateVariables } from "../interpolation";
 
 export async function executeLogicNode(
   node: WorkflowNode,
@@ -132,9 +133,12 @@ async function executeAI(
         ? JSON.stringify(previousOutputs[previousOutputs.length - 1])
         : "";
 
+    // Allow users to reference previous node data in prompts using {{nodeId}}, {{previous}}, etc.
+    const interpolatedPrompt = interpolateVariables(config.prompt, context);
+
     const fullPrompt = contextData
-      ? `${config.prompt}\n\nContext data: ${contextData}`
-      : config.prompt;
+      ? `${interpolatedPrompt}\n\nContext data: ${contextData}`
+      : interpolatedPrompt;
 
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
@@ -181,7 +185,7 @@ async function executeGemini(
   try {
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({
-      model: config.model || "gemini-pro",
+      model: config.model || "gemini-2.5-flash",
     });
 
     const previousOutputs = Array.from(context.nodeOutputs.values());
@@ -190,9 +194,12 @@ async function executeGemini(
         ? JSON.stringify(previousOutputs[previousOutputs.length - 1])
         : "";
 
+    // Allow users to reference previous node data in prompts using {{nodeId}}, {{previous}}, etc.
+    const interpolatedPrompt = interpolateVariables(config.prompt, context);
+
     const fullPrompt = contextData
-      ? `${config.prompt}\n\nContext data: ${contextData}`
-      : config.prompt;
+      ? `${interpolatedPrompt}\n\nContext data: ${contextData}`
+      : interpolatedPrompt;
 
     const result = await model.generateContent(fullPrompt);
     const response = await result.response;
@@ -200,7 +207,7 @@ async function executeGemini(
 
     return {
       response: text,
-      model: config.model || "gemini-pro",
+      model: config.model || "gemini-2.5-flash",
       provider: "gemini",
     };
   } catch (error) {

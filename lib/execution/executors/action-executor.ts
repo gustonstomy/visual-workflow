@@ -7,6 +7,7 @@ import {
 } from "../../types";
 import { google } from "googleapis";
 import { transporter } from "../../email/templates/mail-transporter";
+import { interpolateVariables } from "../interpolation";
 
 export async function executeActionNode(
   node: WorkflowNode,
@@ -222,23 +223,4 @@ async function writeToSheet(
     console.error("Error writing to sheet:", error);
     throw error;
   }
-}
-
-function interpolateVariables(text: string, context: ExecutionContext): string {
-  let result = text;
-
-  context.nodeOutputs.forEach((output, nodeId) => {
-    const placeholder = new RegExp(`{{${nodeId}}}`, "g");
-    result = result.replace(placeholder, JSON.stringify(output));
-  });
-
-  if (context.triggerData) {
-    const placeholderstrigger = /{{trigger}}/g;
-    result = result.replace(
-      placeholderstrigger,
-      JSON.stringify(context.triggerData)
-    );
-  }
-
-  return result;
 }

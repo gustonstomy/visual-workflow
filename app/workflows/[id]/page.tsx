@@ -288,6 +288,8 @@ export default function WorkflowEditor({ params }: WorkflowEditorProps) {
           {selectedNode && (
             <NodeConfigPanel
               node={selectedNode}
+              nodes={nodes}
+              edges={edges}
               onConfigChange={handleNodeConfigChange}
               onDelete={handleNodeDelete}
               onClose={() => setSelectedNode(null)}

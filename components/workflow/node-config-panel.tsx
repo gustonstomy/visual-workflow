@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { X, Trash2 } from "lucide-react";
+import { X, Trash2, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,6 +12,8 @@ import type { Node } from "reactflow";
 
 type NodeConfigPanelProps = {
   node: Node;
+  nodes: Node[];
+  edges: any[];
   onConfigChange: (nodeId: string, config: any, label?: string) => void;
   onDelete: (nodeId: string) => void;
   onClose: () => void;
@@ -19,6 +21,8 @@ type NodeConfigPanelProps = {
 
 export function NodeConfigPanel({
   node,
+  nodes,
+  edges,
   onConfigChange,
   onDelete,
   onClose,
@@ -37,6 +41,104 @@ export function NodeConfigPanel({
 
   const handleSave = () => {
     onConfigChange(node.id, config, label);
+    onClose(); // Close the panel after saving
+  };
+
+  // Helper component to show available data references
+  const DataReferenceHelper = () => {
+    const [showHelper, setShowHelper] = useState(false);
+
+    // Find nodes connected as inputs to the current node
+    const inputNodes = edges
+      .filter((edge) => edge.target === node.id)
+      .map((edge) => {
+        const sourceNode = nodes.find((n) => n.id === edge.source);
+        return sourceNode;
+      })
+      .filter((n) => n !== undefined);
+
+    return (
+      <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3 space-y-2">
+        <button
+          onClick={() => setShowHelper(!showHelper)}
+          className="flex items-center gap-2 text-sm font-medium text-blue-700 dark:text-blue-300 w-full"
+        >
+          <Info className="w-4 h-4" />
+          <span>How to use response from previous node</span>
+          <span className="ml-auto">{showHelper ? "▼" : "▶"}</span>
+        </button>
+
+        {showHelper && (
+          <div className="space-y-3 text-xs">
+            <p className="text-slate-600 dark:text-slate-400">
+              You can use these placeholders to reference data from other nodes:
+            </p>
+
+            {/* Show connected input nodes */}
+            {inputNodes.length > 0 && (
+              <div className="space-y-2">
+                <p className="font-semibold text-slate-700 dark:text-slate-300">
+                  Connected Nodes:
+                </p>
+                {inputNodes.map((inputNode) => (
+                  <div
+                    key={inputNode.id}
+                    className="bg-white dark:bg-slate-900 p-2 rounded border"
+                  >
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="font-medium text-slate-700 dark:text-slate-300">
+                        {inputNode.data.label || inputNode.data.subType}
+                      </span>
+                      <span className="text-xs text-slate-500">
+                        ({inputNode.data.nodeType})
+                      </span>
+                    </div>
+                    <code className="text-green-600 dark:text-green-400 text-xs break-all">
+                      {`{{${inputNode.id}}}`}
+                    </code>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* General placeholders */}
+            <div className="space-y-1">
+              <p className="font-semibold text-slate-700 dark:text-slate-300">
+                Quick Reference:
+              </p>
+              <div className="font-mono bg-white dark:bg-slate-900 p-2 rounded border space-y-1">
+                <div>
+                  <code className="text-green-600 dark:text-green-400">
+                    {"{{previous.response}} "}
+                  </code>
+                  <span className="text-slate-500 ml-2">
+                    Get previous node&apos;s full output
+                  </span>
+                </div>
+                {/* <div>
+                  <code className="text-green-600 dark:text-green-400">
+                    {"{{previous.field}}"}
+                  </code>
+                  <span className="text-slate-500 ml-2">
+                    Get specific field from previous node
+                  </span>
+                </div>
+                <div>
+                  <code className="text-green-600 dark:text-green-400">
+                    {"{{trigger}}"}
+                  </code>
+                  <span className="text-slate-500 ml-2">Get trigger data</span>
+                </div> */}
+              </div>
+            </div>
+
+            <p className="text-slate-500 italic">
+              Example: &quot;Weather is {"{{previous.response}}"}
+            </p>
+          </div>
+        )}
+      </div>
+    );
   };
 
   const renderConfigFields = () => {
@@ -441,6 +543,8 @@ export function NodeConfigPanel({
         </Button>
       </CardHeader>
       <CardContent className="space-y-4">
+        <DataReferenceHelper />
+
         <div className="space-y-2">
           <Label>Node Label</Label>
           <Input
