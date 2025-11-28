@@ -73,30 +73,6 @@ async function fetchWeatherData(config: WeatherDataConfig): Promise<any> {
 }
 
 async function fetchGitHubData(config: GitHubDataConfig): Promise<any> {
-  const token = process.env.GITHUB_TOKEN;
-
-  if (!token) {
-    console.warn("GitHub token not configured, returning mock data");
-    return {
-      repository: `${config.owner}/${config.repository}`,
-      type: config.type || "commits",
-      items: [
-        {
-          id: "1",
-          message: "Initial commit",
-          author: "demo",
-          date: new Date().toISOString(),
-        },
-        {
-          id: "2",
-          message: "Add feature X",
-          author: "demo",
-          date: new Date().toISOString(),
-        },
-      ],
-    };
-  }
-
   try {
     const type = config.type || "commits";
     let endpoint = "";
@@ -115,22 +91,41 @@ async function fetchGitHubData(config: GitHubDataConfig): Promise<any> {
         throw new Error(`Unknown GitHub data type: ${type}`);
     }
 
-    const response = await fetch(endpoint, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/vnd.github.v3+json",
-      },
-    });
+    // Build headers - include token only if available
+    const headers: Record<string, string> = {
+      Accept: "application/vnd.github.v3+json",
+    };
+
+    // if (token) {
+    //   headers.Authorization = `Bearer ${token}`;
+    // }
+
+    const response = await fetch(endpoint, { headers });
 
     if (!response.ok) {
+      if (response.status === 404) {
+        throw new Error(
+          `Repository ${config.owner}/${config.repository} not found or is private`
+        );
+      }
+      if (response.status === 403) {
+        throw new Error(
+          `Rate limit exceeded. Try again later or provide a GitHub token.`
+        );
+      }
       throw new Error(`GitHub API error: ${response.statusText}`);
     }
 
     const data = await response.json();
+
     return {
       repository: `${config.owner}/${config.repository}`,
       type,
       items: data.slice(0, 10),
+      rateLimit: {
+        remaining: response.headers.get("x-ratelimit-remaining"),
+        limit: response.headers.get("x-ratelimit-limit"),
+      },
     };
   } catch (error) {
     console.error("Error fetching GitHub data:", error);

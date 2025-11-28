@@ -26,6 +26,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
+import { Toaster } from "@/components/ui/toaster";
+import { useToast } from "@/components/ui/use-toast";
 
 type Workflow = {
   id: string;
@@ -43,6 +45,13 @@ export default function WorkflowsPage() {
   const [loading, setLoading] = React.useState(true);
   const [isCreating, setIsCreating] = useState(false);
   const [newWorkflow, setNewWorkflow] = useState({ name: "", description: "" });
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [playDialogOpen, setPlayDialogOpen] = useState(false);
+  const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
+  const [selectedWorkflowId, setSelectedWorkflowId] = useState<string | null>(
+    null
+  );
+  const { toast } = useToast();
 
   React.useEffect(() => {
     fetchWorkflows();
@@ -96,14 +105,31 @@ export default function WorkflowsPage() {
     }
   };
 
-  const deleteWorkflow = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this workflow?")) return;
+  const handleDeleteClick = (id: string) => {
+    setSelectedWorkflowId(id);
+    setDeleteDialogOpen(true);
+  };
+
+  const deleteWorkflow = async () => {
+    if (!selectedWorkflowId) return;
 
     try {
-      await fetch(`/api/workflows/${id}`, { method: "DELETE" });
+      await fetch(`/api/workflows/${selectedWorkflowId}`, { method: "DELETE" });
+      toast({
+        title: "Success",
+        description: "Workflow deleted successfully",
+        variant: "success",
+      });
       fetchWorkflows();
+      setDeleteDialogOpen(false);
+      setSelectedWorkflowId(null);
     } catch (error) {
       console.error("Error deleting workflow:", error);
+      toast({
+        title: "Error",
+        description: "Failed to delete workflow",
+        variant: "destructive",
+      });
     }
   };
 
@@ -120,24 +146,53 @@ export default function WorkflowsPage() {
     }
   };
 
-  const executeWorkflow = async (id: string) => {
+  const handlePlayClick = (id: string) => {
+    setSelectedWorkflowId(id);
+    setPlayDialogOpen(true);
+  };
+
+  const executeWorkflow = async () => {
+    if (!selectedWorkflowId) return;
+
     try {
-      const response = await fetch(`/api/execute/${id}`, {
+      const response = await fetch(`/api/execute/${selectedWorkflowId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({}),
       });
 
       const result = await response.json();
-      alert(
-        result.success
-          ? "Workflow executed successfully!"
-          : `Error: ${result.error}`
-      );
+
+      if (result.success) {
+        toast({
+          title: "Success",
+          description: "Workflow executed successfully!",
+          variant: "success",
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: result.error || "Failed to execute workflow",
+          variant: "destructive",
+        });
+      }
+
+      setPlayDialogOpen(false);
+      setSelectedWorkflowId(null);
     } catch (error) {
       console.error("Error executing workflow:", error);
-      alert("Failed to execute workflow");
+      toast({
+        title: "Error",
+        description: "Failed to execute workflow",
+        variant: "destructive",
+      });
+      setPlayDialogOpen(false);
+      setSelectedWorkflowId(null);
     }
+  };
+
+  const handleLogout = () => {
+    signOut({ callbackUrl: "/login" });
   };
 
   if (loading) {
@@ -153,7 +208,7 @@ export default function WorkflowsPage() {
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 p-8">
       <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex flex-col md:flex-row gap-8 md:gap-0 justify-between items-center mb-8">
           <div>
             <h1 className="text-4xl font-bold text-slate-900 dark:text-slate-100">
               Workflows
@@ -164,18 +219,49 @@ export default function WorkflowsPage() {
           </div>
 
           <div className="flex gap-3">
-            <Button
-              size="lg"
-              variant="outline"
-              className="gap-2"
-              onClick={() => signOut({ callbackUrl: "/login" })}
-            >
-              <LogOut className="w-5 h-5" />
-              Logout
-            </Button>
+            <Dialog open={logoutDialogOpen} onOpenChange={setLogoutDialogOpen}>
+              <DialogTrigger asChild>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="gap-2 hover:bg-black hover:text-white bg-transparent"
+                >
+                  <LogOut className="w-5 h-5" />
+                  Logout
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="bg-slate-900 border-slate-700">
+                <DialogHeader>
+                  <DialogTitle className="text-slate-100">
+                    Confirm Logout
+                  </DialogTitle>
+                  <DialogDescription className="text-slate-400">
+                    Are you sure you want to logout?
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                  <Button
+                    variant="outline"
+                    onClick={() => setLogoutDialogOpen(false)}
+                    className="hover:bg-slate-800 hover:text-white bg-transparent border-slate-600"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={handleLogout}
+                    className="hover:bg-red-700 bg-red-600 text-white border-0"
+                  >
+                    Logout
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
             <Dialog>
               <DialogTrigger asChild>
-                <Button size="lg" className="gap-2">
+                <Button
+                  size="lg"
+                  className="gap-2  hover:bg-black hover:text-white bg-transparent border border-white"
+                >
                   <Plus className="w-5 h-5" />
                   Create Workflow
                 </Button>
@@ -215,7 +301,11 @@ export default function WorkflowsPage() {
                   </div>
                 </div>
                 <DialogFooter>
-                  <Button onClick={createWorkflow} disabled={isCreating}>
+                  <Button
+                    onClick={createWorkflow}
+                    disabled={isCreating}
+                    className="hover:bg-black hover:text-white bg-transparent border border-white"
+                  >
                     {isCreating ? "Creating..." : "Create Workflow"}
                   </Button>
                 </DialogFooter>
@@ -225,13 +315,15 @@ export default function WorkflowsPage() {
         </div>
 
         {workflows?.length === 0 ? (
-          <Card>
-            <CardContent className="flex flex-col items-center justify-center py-16">
-              <p className="text-slate-600 dark:text-slate-400 mb-4">
-                No workflows yet. Create your first one to get started!
-              </p>
-            </CardContent>
-          </Card>
+          <div className="h-[70vh] w-full flex items-center justify-center">
+            <Card>
+              <CardContent className="flex flex-col items-center justify-center py-16">
+                <p className="text-slate-600 dark:text-slate-400 mb-4">
+                  No workflows yet. Create your first one to get started!
+                </p>
+              </CardContent>
+            </Card>
+          </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {workflows?.map((workflow) => (
@@ -271,7 +363,7 @@ export default function WorkflowsPage() {
                         size="sm"
                         variant="outline"
                         asChild
-                        className="flex-1"
+                        className="flex-1  hover:bg-black hover:text-white bg-transparent"
                       >
                         <Link href={`/workflows/${workflow.id}`}>
                           <Edit className="w-4 h-4 mr-2" />
@@ -281,14 +373,16 @@ export default function WorkflowsPage() {
                       <Button
                         size="sm"
                         variant="outline"
-                        onClick={() => executeWorkflow(workflow.id)}
+                        className=" hover:bg-black hover:text-white bg-transparent"
+                        onClick={() => handlePlayClick(workflow.id)}
                       >
                         <Play className="w-4 h-4" />
                       </Button>
                       <Button
                         size="sm"
                         variant="outline"
-                        onClick={() => deleteWorkflow(workflow.id)}
+                        className=" hover:bg-black hover:text-white bg-transparent"
+                        onClick={() => handleDeleteClick(workflow.id)}
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>
@@ -299,6 +393,67 @@ export default function WorkflowsPage() {
             ))}
           </div>
         )}
+
+        {/* Delete Confirmation Dialog */}
+        <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+          <DialogContent className="bg-slate-900 border-slate-700">
+            <DialogHeader>
+              <DialogTitle className="text-slate-100">
+                Delete Workflow
+              </DialogTitle>
+              <DialogDescription className="text-slate-400">
+                Are you sure you want to delete this workflow? This action
+                cannot be undone.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => setDeleteDialogOpen(false)}
+                className="hover:bg-slate-800 hover:text-white bg-transparent border-slate-600"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={deleteWorkflow}
+                className="hover:bg-red-700 bg-red-600 text-white border-0"
+              >
+                Delete
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Play Confirmation Dialog */}
+        <Dialog open={playDialogOpen} onOpenChange={setPlayDialogOpen}>
+          <DialogContent className="bg-slate-900 border-slate-700">
+            <DialogHeader>
+              <DialogTitle className="text-slate-100">
+                Execute Workflow
+              </DialogTitle>
+              <DialogDescription className="text-slate-400">
+                Are you sure you want to execute this workflow?
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => setPlayDialogOpen(false)}
+                className="hover:bg-slate-800 hover:text-white bg-transparent border-slate-600"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={executeWorkflow}
+                className="hover:bg-green-700 bg-green-600 text-white border-0"
+              >
+                Execute
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        <Toaster />
       </div>
     </div>
   );

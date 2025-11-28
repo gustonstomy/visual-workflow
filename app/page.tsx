@@ -6,7 +6,6 @@ import {
   Cloud,
   Code2,
   Mail,
-  Github,
   Star,
 } from "lucide-react";
 import Link from "next/link";
@@ -37,7 +36,7 @@ export default function Home() {
           <div className="grid lg:grid-cols-2 gap-12 items-center mb-32">
             {/* Left Content */}
             <div className="relative z-10">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 mb-6">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-br from-gray-800/40 to-gray-900/40 backdrop-blur-sm border border-gray-700/50 mb-6">
                 <Zap className="w-4 h-4" />
                 <span className="text-sm font-medium">Automate Everything</span>
               </div>
