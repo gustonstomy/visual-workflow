@@ -3,7 +3,6 @@ import {
   WorkflowNode,
   ExecutionContext,
   FilterLogicConfig,
-  TransformLogicConfig,
   ConditionLogicConfig,
   AILogicConfig,
 } from "../../types";
@@ -60,7 +59,6 @@ function executeFilter(node: WorkflowNode, context: ExecutionContext): any {
 }
 
 function executeTransform(node: WorkflowNode, context: ExecutionContext): any {
-  const config = node.config as TransformLogicConfig;
   const previousOutputs = Array.from(context.nodeOutputs.values());
 
   if (previousOutputs.length === 0) {
@@ -133,8 +131,14 @@ async function executeAI(
         ? JSON.stringify(previousOutputs[previousOutputs.length - 1])
         : "";
 
+    // If prompt is empty, automatically analyze the previous node's output
+    const promptText =
+      config.prompt && config.prompt.trim()
+        ? config.prompt
+        : "Analyze and summarize this data: {{previous}}";
+
     // Allow users to reference previous node data in prompts using {{nodeId}}, {{previous}}, etc.
-    const interpolatedPrompt = interpolateVariables(config.prompt, context);
+    const interpolatedPrompt = interpolateVariables(promptText, context);
 
     const fullPrompt = contextData
       ? `${interpolatedPrompt}\n\nContext data: ${contextData}`
@@ -194,8 +198,14 @@ async function executeGemini(
         ? JSON.stringify(previousOutputs[previousOutputs.length - 1])
         : "";
 
+    // If prompt is empty, automatically analyze the previous node's output
+    const promptText =
+      config.prompt && config.prompt.trim()
+        ? config.prompt
+        : "Analyze and summarize this data: {{previous}}";
+
     // Allow users to reference previous node data in prompts using {{nodeId}}, {{previous}}, etc.
-    const interpolatedPrompt = interpolateVariables(config.prompt, context);
+    const interpolatedPrompt = interpolateVariables(promptText, context);
 
     const fullPrompt = contextData
       ? `${interpolatedPrompt}\n\nContext data: ${contextData}`

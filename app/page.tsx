@@ -1,26 +1,21 @@
-import Link from "next/link";
+import React from "react";
 import {
   ArrowRight,
   Zap,
   Workflow,
-  CloudIcon,
+  Cloud,
   Code2,
   Mail,
   Github,
+  Star,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-900 via-purple-900 to-slate-900">
-      <nav className="border-b border-white/10 backdrop-blur-sm bg-white/5">
+    <div className="min-h-screen bg-black text-white overflow-hidden">
+      {/* Navigation */}
+      <nav className="relative z-10 border-b border-white/10 backdrop-blur-sm bg-black/50">
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
             <Workflow className="w-8 h-8 text-purple-400" />
@@ -28,161 +23,202 @@ export default function Home() {
               Visual Workflow
             </span>
           </div>
-          <Link href="/workflows">
-            <Button
-              variant="outline"
-              className="bg-white/10 text-white border-white/20 hover:bg-white/20"
-            >
+          <Link href="/register">
+            <button className="px-6 py-2 bg-white text-black rounded-full font-medium hover:bg-gray-200 transition-colors">
               Get Started
-            </Button>
+            </button>
           </Link>
         </div>
       </nav>
 
-      <main className="max-w-7xl mx-auto px-6 py-20">
-        <div className="text-center mb-20">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 mb-6">
-            <Zap className="w-4 h-4" />
-            <span className="text-sm font-medium">Automate Everything</span>
+      {/* Hero Section */}
+      <main className="relative">
+        <div className="max-w-7xl mx-auto px-6 py-20">
+          <div className="grid lg:grid-cols-2 gap-12 items-center mb-32">
+            {/* Left Content */}
+            <div className="relative z-10">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 mb-6">
+                <Zap className="w-4 h-4" />
+                <span className="text-sm font-medium">Automate Everything</span>
+              </div>
+
+              <div className="mb-6">
+                <div className="inline-block bg-yellow-400/20 rounded-full px-4 py-2 mb-4">
+                  <span className="text-yellow-300 text-5xl font-bold">
+                    Go beyond and
+                  </span>
+                </div>
+                <h1 className="text-6xl font-bold leading-tight mb-2">
+                  create your space
+                </h1>
+              </div>
+
+              <p className="text-lg text-gray-400 mb-8 max-w-lg">
+                Create automation flows with triggers, data sources, logic
+                blocks, and actions. Connect your services and automate your
+                daily tasks in minutes.
+              </p>
+
+              <Link href="/register">
+                <button className="px-8 py-4 bg-white text-black rounded-full font-medium hover:bg-gray-200 transition-colors text-lg">
+                  Get started
+                </button>
+              </Link>
+            </div>
+
+            {/* Right - Space Illustration */}
+            <div className="relative h-[600px]">
+              {/* Purple waves background */}
+              <div className="absolute inset-0">
+                <svg viewBox="0 0 500 500" className="w-full h-full">
+                  <defs>
+                    <linearGradient
+                      id="purpleGrad"
+                      x1="0%"
+                      y1="0%"
+                      x2="100%"
+                      y2="100%"
+                    >
+                      <stop offset="0%" stopColor="#7c3aed" />
+                      <stop offset="100%" stopColor="#a855f7" />
+                    </linearGradient>
+                  </defs>
+
+                  {/* Layered waves */}
+                  <path
+                    d="M 450 50 Q 400 100 350 150 Q 300 200 250 250 Q 200 300 150 350 Q 100 400 50 450 L 500 450 L 500 0 Z"
+                    fill="url(#purpleGrad)"
+                    opacity="0.4"
+                  />
+                  <path
+                    d="M 480 80 Q 430 130 380 180 Q 330 230 280 280 Q 230 330 180 380 Q 130 430 80 480 L 500 480 L 500 30 Z"
+                    fill="url(#purpleGrad)"
+                    opacity="0.5"
+                  />
+                  <path
+                    d="M 500 100 Q 450 150 400 200 Q 350 250 300 300 Q 250 350 200 400 Q 150 450 100 500 L 500 500 L 500 50 Z"
+                    fill="url(#purpleGrad)"
+                    opacity="0.6"
+                  />
+                </svg>
+              </div>
+
+              {/* Central planet with rings */}
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                <div className="relative w-48 h-48">
+                  <div className="absolute inset-0 rounded-full bg-gradient-to-br from-orange-500 via-orange-600 to-red-700 shadow-2xl">
+                    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-orange-400/50 to-transparent"></div>
+                  </div>
+                  {/* Ring */}
+                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-72 h-24">
+                    <div
+                      className="w-full h-full rounded-full border-8 border-cyan-400/60 transform rotate-12"
+                      style={{ boxShadow: "0 0 30px rgba(34, 211, 238, 0.4)" }}
+                    ></div>
+                    <div
+                      className="absolute inset-0 w-full h-full rounded-full border-4 border-cyan-300/40 transform rotate-12"
+                      style={{ margin: "4px" }}
+                    ></div>
+                  </div>
+                </div>
+
+                {/* Glowing star behind planet */}
+                <div className="absolute -top-20 -left-20 w-32 h-32 bg-yellow-400 rounded-full blur-3xl opacity-50"></div>
+                <div className="absolute -top-16 -left-16 w-24 h-24 bg-yellow-300 rounded-full blur-2xl opacity-70"></div>
+              </div>
+
+              {/* Floating planets/moons */}
+              <div className="absolute top-20 right-20 w-16 h-16 rounded-full bg-gradient-to-br from-red-500 to-purple-600 shadow-lg"></div>
+              <div className="absolute top-40 right-32 w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 shadow-lg"></div>
+              <div className="absolute top-60 right-16 w-20 h-20 rounded-full bg-gradient-to-br from-orange-400 to-red-500 shadow-lg"></div>
+              <div className="absolute bottom-32 right-40 w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 shadow-lg"></div>
+              <div className="absolute top-32 right-48 w-10 h-10 rounded-full bg-gradient-to-br from-pink-500 to-red-600 shadow-lg"></div>
+
+              {/* Stats */}
+              <div className="absolute top-16 right-8 text-right">
+                <div className="text-5xl font-bold text-white mb-1">256B+</div>
+                <div className="text-sm text-gray-400">
+                  Lorem ipsum dolor sit
+                </div>
+              </div>
+              <div className="absolute bottom-24 right-8 text-right">
+                <div className="text-5xl font-bold text-white mb-1">986K+</div>
+                <div className="text-sm text-gray-400">
+                  Lorem ipsum dolor sit
+                </div>
+              </div>
+
+              {/* Small stars */}
+              <div className="absolute top-32 right-64 w-2 h-2 bg-yellow-300 rounded-full animate-pulse"></div>
+              <div
+                className="absolute bottom-40 right-72 w-2 h-2 bg-yellow-300 rounded-full animate-pulse"
+                style={{ animationDelay: "0.5s" }}
+              ></div>
+            </div>
           </div>
 
-          <h1 className="text-6xl font-bold text-white mb-6 leading-tight">
-            Build Powerful Workflows
-            <br />
-            <span className="bg-linear-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-              Without Writing Code
-            </span>
-          </h1>
-
-          <p className="text-xl text-slate-300 mb-10 max-w-2xl mx-auto">
-            Create automation flows with triggers, data sources, logic blocks,
-            and actions. Connect your services and automate your daily tasks in
-            minutes.
-          </p>
-
-          <div className="flex gap-4 justify-center">
-            <Link href="/workflows">
-              <Button
-                size="lg"
-                className="gap-2 bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-0"
+          {/* Feature Cards */}
+          <div className="grid md:grid-cols-4 gap-6 mb-20">
+            {[
+              {
+                icon: <Zap className="w-6 h-6" />,
+                title: "Visual Builder",
+                desc: "Drag and drop nodes to create workflows. Connect triggers, data sources, logic, and actions visually.",
+              },
+              {
+                icon: <Cloud className="w-6 h-6" />,
+                title: "Data Integration",
+                desc: "Connect to weather APIs, GitHub, calendars, and custom HTTP endpoints to fetch data.",
+              },
+              {
+                icon: <Code2 className="w-6 h-6" />,
+                title: "Smart Execution",
+                desc: "Execute workflows with intelligent data flow, error handling, and conditional logic.",
+              },
+              {
+                icon: <Mail className="w-6 h-6" />,
+                title: "Daily Briefing",
+                desc: "Combine weather data, calendar events, and reminders into a daily email/SMS briefing.",
+              },
+            ].map((feature, i) => (
+              <div
+                key={i}
+                className="bg-gradient-to-br from-gray-800/40 to-gray-900/40 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-6 hover:border-purple-500/50 transition-all"
               >
-                Create Your First Workflow
+                <div className="w-12 h-12 bg-gradient-to-br from-gray-700 to-gray-800 rounded-xl flex items-center justify-center mb-4 text-white">
+                  <Star className="w-6 h-6" />
+                </div>
+                <h3 className="text-lg font-bold mb-2 text-white">
+                  {feature.title}
+                </h3>
+                <p className="text-sm text-gray-400 leading-relaxed">
+                  {feature.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          {/* CTA Section */}
+          <div className="text-center bg-gradient-to-br from-gray-800/40 to-gray-900/40 backdrop-blur-sm border border-gray-700/50 rounded-3xl p-16">
+            <h2 className="text-4xl font-bold text-white mb-4">
+              Ready to Automate?
+            </h2>
+            <p className="text-gray-300 mb-8 max-w-xl mx-auto text-lg">
+              Start building your first workflow today. No credit card required.
+            </p>
+            <Link href="/register">
+              <button className="inline-flex items-center gap-2 px-8 py-4 bg-white text-black rounded-full font-medium hover:bg-gray-200 transition-colors">
+                Get Started Now
                 <ArrowRight className="w-5 h-5" />
-              </Button>
+              </button>
             </Link>
           </div>
         </div>
-
-        <div className="grid md:grid-cols-3 gap-8 mb-20">
-          <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
-            <CardHeader>
-              <div className="w-12 h-12 rounded-lg bg-purple-500/20 flex items-center justify-center mb-4">
-                <Zap className="w-6 h-6 text-purple-400" />
-              </div>
-              <CardTitle className="text-white">Visual Builder</CardTitle>
-              <CardDescription className="text-slate-400">
-                Drag and drop nodes to create workflows. Connect triggers, data
-                sources, logic, and actions visually.
-              </CardDescription>
-            </CardHeader>
-          </Card>
-
-          <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
-            <CardHeader>
-              <div className="w-12 h-12 rounded-lg bg-blue-500/20 flex items-center justify-center mb-4">
-                <CloudIcon className="w-6 h-6 text-blue-400" />
-              </div>
-              <CardTitle className="text-white">Data Integration</CardTitle>
-              <CardDescription className="text-slate-400">
-                Connect to weather APIs, GitHub, calendars, and custom HTTP
-                endpoints to fetch data.
-              </CardDescription>
-            </CardHeader>
-          </Card>
-
-          <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
-            <CardHeader>
-              <div className="w-12 h-12 rounded-lg bg-green-500/20 flex items-center justify-center mb-4">
-                <Code2 className="w-6 h-6 text-green-400" />
-              </div>
-              <CardTitle className="text-white">Smart Execution</CardTitle>
-              <CardDescription className="text-slate-400">
-                Execute workflows with intelligent data flow, error handling,
-                and conditional logic.
-              </CardDescription>
-            </CardHeader>
-          </Card>
-        </div>
-
-        <div className="mb-20">
-          <h2 className="text-3xl font-bold text-white text-center mb-4">
-            Example Use Cases
-          </h2>
-          <p className="text-slate-400 text-center mb-10 max-w-2xl mx-auto">
-            Build workflows for daily briefings, social media automation, GitHub
-            digests, and more
-          </p>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            <Card className="bg-linear-to-br from-purple-500/10 to-pink-500/10 border-purple-500/20 backdrop-blur-sm">
-              <CardHeader>
-                <div className="flex items-center gap-3">
-                  <Mail className="w-8 h-8 text-purple-400" />
-                  <CardTitle className="text-white">Daily Briefing</CardTitle>
-                </div>
-                <CardDescription className="text-slate-300">
-                  Combine weather data, calendar events, and reminders into a
-                  daily email/SMS briefing.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-sm text-slate-400">
-                  Schedule → Weather → Calendar → Email
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-linear-to-br from-blue-500/10 to-cyan-500/10 border-blue-500/20 backdrop-blur-sm">
-              <CardHeader>
-                <div className="flex items-center gap-3">
-                  <Github className="w-8 h-8 text-blue-400" />
-                  <CardTitle className="text-white">GitHub Digest</CardTitle>
-                </div>
-                <CardDescription className="text-slate-300">
-                  Generate weekly summaries of commits, issues, and PRs across
-                  your projects.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-sm text-slate-400">
-                  Schedule → GitHub → Transform → Email
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-
-        <div className="text-center bg-linear-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-2xl p-12">
-          <h2 className="text-3xl font-bold text-white mb-4">
-            Ready to Automate?
-          </h2>
-          <p className="text-slate-300 mb-8 max-w-xl mx-auto">
-            Start building your first workflow today. No credit card required.
-          </p>
-          <Link href="/workflows">
-            <Button
-              size="lg"
-              className="gap-2 bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-0"
-            >
-              Get Started Now
-              <ArrowRight className="w-5 h-5" />
-            </Button>
-          </Link>
-        </div>
       </main>
 
+      {/* Footer */}
       <footer className="border-t border-white/10 mt-20">
-        <div className="max-w-7xl mx-auto px-6 py-8 text-center text-slate-400">
+        <div className="max-w-7xl mx-auto px-6 py-8 text-center text-gray-400">
           <p>
             Visual Workflow Builder - Create powerful automations without code
           </p>

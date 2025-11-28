@@ -20,7 +20,7 @@ export async function executeActionNode(
       return await sendEmail(node.config as EmailActionConfig, context);
 
     case "sms":
-      return await sendSMS(node.config, context);
+      return await sendSMS(node.config);
 
     case "webhook":
       return await sendWebhook(node.config, context);
@@ -56,8 +56,16 @@ async function sendEmail(
   }
 
   try {
-    const body = interpolateVariables(config.body, context);
-    const subject = interpolateVariables(config.subject, context);
+    // If body is empty, automatically use the previous node's output
+    const bodyText =
+      config.body && config.body.trim() ? config.body : "{{previous}}"; // Default to full previous node output
+    const subjectText =
+      config.subject && config.subject.trim()
+        ? config.subject
+        : "Workflow Result";
+
+    const body = interpolateVariables(bodyText, context);
+    const subject = interpolateVariables(subjectText, context);
 
     const info = await transporter.sendMail({
       from: config.from || process.env.SMTP_USER, // Use config from or default to SMTP user
@@ -78,7 +86,7 @@ async function sendEmail(
   }
 }
 
-async function sendSMS(config: any, context: ExecutionContext): Promise<any> {
+async function sendSMS(config: any): Promise<any> {
   console.warn("SMS integration not implemented, simulating");
   return {
     success: true,

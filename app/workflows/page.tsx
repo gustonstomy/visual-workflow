@@ -3,7 +3,8 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { Plus, Play, Edit, Trash2 } from "lucide-react";
+import { Plus, Play, Edit, Trash2, LogOut } from "lucide-react";
+import { signOut } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -51,9 +52,23 @@ export default function WorkflowsPage() {
     try {
       const response = await fetch("/api/workflows");
       const data = await response.json();
-      setWorkflows(data);
+
+      // Check if response is unauthorized or an error
+      if (!response.ok || data.error) {
+        console.error("Error fetching workflows:", data.error);
+        // Redirect to login if unauthorized
+        // if (response.status === 401) {
+        //   signOut({ callbackUrl: "/login" });
+        // }
+        setWorkflows([]);
+        return;
+      }
+
+      // Ensure data is an array
+      setWorkflows(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error("Error fetching workflows:", error);
+      setWorkflows([]);
     } finally {
       setLoading(false);
     }
@@ -148,57 +163,68 @@ export default function WorkflowsPage() {
             </p>
           </div>
 
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button size="lg" className="gap-2">
-                <Plus className="w-5 h-5" />
-                Create Workflow
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Create New Workflow</DialogTitle>
-                <DialogDescription>
-                  Give your workflow a name and description
-                </DialogDescription>
-              </DialogHeader>
-              <div className="space-y-4 py-4">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Name</Label>
-                  <Input
-                    id="name"
-                    placeholder="My Automation Workflow"
-                    value={newWorkflow.name}
-                    onChange={(e) =>
-                      setNewWorkflow({ ...newWorkflow, name: e.target.value })
-                    }
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="description">Description</Label>
-                  <Textarea
-                    id="description"
-                    placeholder="What does this workflow do?"
-                    value={newWorkflow.description}
-                    onChange={(e) =>
-                      setNewWorkflow({
-                        ...newWorkflow,
-                        description: e.target.value,
-                      })
-                    }
-                  />
-                </div>
-              </div>
-              <DialogFooter>
-                <Button onClick={createWorkflow} disabled={isCreating}>
-                  {isCreating ? "Creating..." : "Create Workflow"}
+          <div className="flex gap-3">
+            <Button
+              size="lg"
+              variant="outline"
+              className="gap-2"
+              onClick={() => signOut({ callbackUrl: "/login" })}
+            >
+              <LogOut className="w-5 h-5" />
+              Logout
+            </Button>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button size="lg" className="gap-2">
+                  <Plus className="w-5 h-5" />
+                  Create Workflow
                 </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Create New Workflow</DialogTitle>
+                  <DialogDescription>
+                    Give your workflow a name and description
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4 py-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Name</Label>
+                    <Input
+                      id="name"
+                      placeholder="My Automation Workflow"
+                      value={newWorkflow.name}
+                      onChange={(e) =>
+                        setNewWorkflow({ ...newWorkflow, name: e.target.value })
+                      }
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="description">Description</Label>
+                    <Textarea
+                      id="description"
+                      placeholder="What does this workflow do?"
+                      value={newWorkflow.description}
+                      onChange={(e) =>
+                        setNewWorkflow({
+                          ...newWorkflow,
+                          description: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button onClick={createWorkflow} disabled={isCreating}>
+                    {isCreating ? "Creating..." : "Create Workflow"}
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
 
-        {workflows.length === 0 ? (
+        {workflows?.length === 0 ? (
           <Card>
             <CardContent className="flex flex-col items-center justify-center py-16">
               <p className="text-slate-600 dark:text-slate-400 mb-4">
@@ -208,7 +234,7 @@ export default function WorkflowsPage() {
           </Card>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {workflows.map((workflow) => (
+            {workflows?.map((workflow) => (
               <Card
                 key={workflow.id}
                 className="hover:shadow-lg transition-shadow"

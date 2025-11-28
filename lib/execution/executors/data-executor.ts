@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   WorkflowNode,
-  ExecutionContext,
   WeatherDataConfig,
   GitHubDataConfig,
   HTTPDataConfig,
@@ -9,10 +8,7 @@ import {
 } from "../../types";
 import { google } from "googleapis";
 
-export async function executeDataNode(
-  node: WorkflowNode,
-  context: ExecutionContext
-): Promise<any> {
+export async function executeDataNode(node: WorkflowNode): Promise<any> {
   console.log(`Executing data node: ${node.subType}`);
 
   switch (node.subType) {
