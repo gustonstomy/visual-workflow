@@ -361,7 +361,7 @@ export function NodeConfigPanel({
                 setConfig({ ...config, provider: e.target.value })
               }
             >
-              <option value="openai">OpenAI</option>
+              {/* <option value="openai">OpenAI</option> */}
               <option value="gemini">Google Gemini</option>
             </select>
           </div>

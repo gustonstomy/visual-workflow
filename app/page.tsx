@@ -36,9 +36,11 @@ export default function Home() {
           <div className="grid lg:grid-cols-2 gap-12 items-center mb-32">
             {/* Left Content */}
             <div className="relative z-10">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-br from-gray-800/40 to-gray-900/40 backdrop-blur-sm border border-gray-700/50 mb-6">
+              <div className="shadow-lg hover:shadow-purple-500/50 transition-all inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-br from-gray-800/40 to-gray-900/40 backdrop-blur-sm border border-gray-700/50 mb-6">
                 <Zap className="w-4 h-4" />
-                <span className="text-sm font-medium">Automate Everything</span>
+                <span className="text-sm font-medium ">
+                  Automate Everything
+                </span>
               </div>
 
               <div className="mb-6">
@@ -54,7 +56,7 @@ export default function Home() {
 
               <p className="text-lg text-gray-400 mb-8 max-w-lg">
                 Create automation flows with triggers, data sources, logic
-                blocks, and actions. Connect your services and automate your
+                blocks and actions. Connect your services and automate your
                 daily tasks in minutes.
               </p>
 
@@ -137,13 +139,13 @@ export default function Home() {
               <div className="absolute top-16 right-8 text-right">
                 <div className="text-5xl font-bold text-white mb-1">256B+</div>
                 <div className="text-sm text-gray-400">
-                  Lorem ipsum dolor sit
+                  Keep your life simple
                 </div>
               </div>
               <div className="absolute bottom-24 right-8 text-right">
                 <div className="text-5xl font-bold text-white mb-1">986K+</div>
                 <div className="text-sm text-gray-400">
-                  Lorem ipsum dolor sit
+                  Keep your life simple
                 </div>
               </div>
 
@@ -162,27 +164,27 @@ export default function Home() {
               {
                 icon: <Zap className="w-6 h-6" />,
                 title: "Visual Builder",
-                desc: "Drag and drop nodes to create workflows. Connect triggers, data sources, logic, and actions visually.",
+                desc: "Drag and drop nodes to create workflows. Connect triggers, data sources, logic and actions visually.",
               },
               {
                 icon: <Cloud className="w-6 h-6" />,
                 title: "Data Integration",
-                desc: "Connect to weather APIs, GitHub, calendars, and custom HTTP endpoints to fetch data.",
+                desc: "Connect to weather APIs, GitHub, calendars and custom HTTP endpoints to fetch data.",
               },
               {
                 icon: <Code2 className="w-6 h-6" />,
                 title: "Smart Execution",
-                desc: "Execute workflows with intelligent data flow, error handling, and conditional logic.",
+                desc: "Execute workflows with intelligent data flow, error handling and conditional logic.",
               },
               {
                 icon: <Mail className="w-6 h-6" />,
                 title: "Daily Briefing",
-                desc: "Combine weather data, calendar events, and reminders into a daily email/SMS briefing.",
+                desc: "Combine weather data, calendar events and reminders into a daily email/SMS briefing.",
               },
             ].map((feature, i) => (
               <div
                 key={i}
-                className="bg-gradient-to-br from-gray-800/40 to-gray-900/40 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-6 hover:border-purple-500/50 transition-all"
+                className="shadow-lg hover:shadow-purple-500/50  bg-gradient-to-br from-gray-800/40 to-gray-900/40 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-6 hover:border-purple-500/50 transition-all"
               >
                 <div className="w-12 h-12 bg-gradient-to-br from-gray-700 to-gray-800 rounded-xl flex items-center justify-center mb-4 text-white">
                   <Star className="w-6 h-6" />

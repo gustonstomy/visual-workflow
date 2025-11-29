@@ -230,12 +230,12 @@ export default function WorkflowsPage() {
                   Logout
                 </Button>
               </DialogTrigger>
-              <DialogContent className="bg-slate-900 border-slate-700">
+              <DialogContent className="bg-linear-to-br dark:from-slate-950 dark:to-slate-900 border-white text-white">
                 <DialogHeader>
-                  <DialogTitle className="text-slate-100">
+                  <DialogTitle className="text-white">
                     Confirm Logout
                   </DialogTitle>
-                  <DialogDescription className="text-slate-400">
+                  <DialogDescription className="text-white">
                     Are you sure you want to logout?
                   </DialogDescription>
                 </DialogHeader>
@@ -243,13 +243,13 @@ export default function WorkflowsPage() {
                   <Button
                     variant="outline"
                     onClick={() => setLogoutDialogOpen(false)}
-                    className="hover:bg-slate-800 hover:text-white bg-transparent border-slate-600"
+                    className="hover:bg-slate-800 hover:text-white bg-transparent border-white text-white"
                   >
                     Cancel
                   </Button>
                   <Button
                     onClick={handleLogout}
-                    className="hover:bg-red-700 bg-red-600 text-white border-0"
+                    className="hover:bg-red-700 bg-red-600 text-white border-white"
                   >
                     Logout
                   </Button>
@@ -318,7 +318,7 @@ export default function WorkflowsPage() {
           <div className="h-[70vh] w-full flex items-center justify-center">
             <Card>
               <CardContent className="flex flex-col items-center justify-center py-16">
-                <p className="text-slate-600 dark:text-slate-400 mb-4">
+                <p className="text-white  font-bold mb-4 text-lg">
                   No workflows yet. Create your first one to get started!
                 </p>
               </CardContent>
@@ -396,12 +396,10 @@ export default function WorkflowsPage() {
 
         {/* Delete Confirmation Dialog */}
         <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-          <DialogContent className="bg-slate-900 border-slate-700">
+          <DialogContent className="bg-linear-to-br dark:from-slate-950 dark:to-slate-900 border-white text-white">
             <DialogHeader>
-              <DialogTitle className="text-slate-100">
-                Delete Workflow
-              </DialogTitle>
-              <DialogDescription className="text-slate-400">
+              <DialogTitle className="text-white">Delete Workflow</DialogTitle>
+              <DialogDescription className="text-white">
                 Are you sure you want to delete this workflow? This action
                 cannot be undone.
               </DialogDescription>
@@ -410,13 +408,13 @@ export default function WorkflowsPage() {
               <Button
                 variant="outline"
                 onClick={() => setDeleteDialogOpen(false)}
-                className="hover:bg-slate-800 hover:text-white bg-transparent border-slate-600"
+                className="hover:bg-slate-800 hover:text-white bg-transparent border-white text-white"
               >
                 Cancel
               </Button>
               <Button
                 onClick={deleteWorkflow}
-                className="hover:bg-red-700 bg-red-600 text-white border-0"
+                className="hover:bg-red-700 bg-red-600 text-white border-white"
               >
                 Delete
               </Button>
@@ -426,12 +424,10 @@ export default function WorkflowsPage() {
 
         {/* Play Confirmation Dialog */}
         <Dialog open={playDialogOpen} onOpenChange={setPlayDialogOpen}>
-          <DialogContent className="bg-slate-900 border-slate-700">
+          <DialogContent className="bg-linear-to-br dark:from-slate-950 dark:to-slate-900 border-white text-white">
             <DialogHeader>
-              <DialogTitle className="text-slate-100">
-                Execute Workflow
-              </DialogTitle>
-              <DialogDescription className="text-slate-400">
+              <DialogTitle className="text-white">Execute Workflow</DialogTitle>
+              <DialogDescription className="text-white">
                 Are you sure you want to execute this workflow?
               </DialogDescription>
             </DialogHeader>
@@ -439,13 +435,13 @@ export default function WorkflowsPage() {
               <Button
                 variant="outline"
                 onClick={() => setPlayDialogOpen(false)}
-                className="hover:bg-slate-800 hover:text-white bg-transparent border-slate-600"
+                className="hover:bg-slate-800 hover:text-white bg-transparent border-white text-white"
               >
                 Cancel
               </Button>
               <Button
                 onClick={executeWorkflow}
-                className="hover:bg-green-700 bg-green-600 text-white border-0"
+                className="hover:bg-green-700 bg-green-600 text-white border-white"
               >
                 Execute
               </Button>
